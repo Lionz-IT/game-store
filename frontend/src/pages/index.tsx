@@ -1,4 +1,3 @@
-import React from 'react';
 
 export const Categories = () => (
   <div className="flex flex-col items-center justify-center h-[60vh] text-center">

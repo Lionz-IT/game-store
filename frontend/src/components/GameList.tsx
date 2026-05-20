@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Loader2, Heart, ShoppingBag, Star } from 'lucide-react';
 
