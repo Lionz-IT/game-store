@@ -53,8 +53,8 @@ export const GameList = ({ limit }: GameListProps) => {
 
   return (
     <section>
-        <div className="flex justify-between items-end mb-[24px]">
-          <h2 className="text-heading-lg font-bold text-absolute-zero uppercase tracking-wide">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-[24px] gap-2">
+          <h2 className="text-2xl sm:text-heading-lg font-bold text-absolute-zero uppercase tracking-wide">
             {limit ? 'GAMES ON PROMOTION' : 'ALL GAMES'}
           </h2>
           {limit && (
@@ -64,7 +64,7 @@ export const GameList = ({ limit }: GameListProps) => {
           )}
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[20px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-[20px]">
             {displayedGames.map((game) => (
               <GameCard key={game._id} game={game} />
             ))}
