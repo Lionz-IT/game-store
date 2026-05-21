@@ -3,6 +3,7 @@ import { Play, Pause } from 'lucide-react';
 import type { Game } from '../context/WishlistContext';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Navigation, Autoplay } from 'swiper/modules';
+import { useCart } from '../context/CartContext'; // Import useCart
 
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
@@ -11,6 +12,7 @@ import 'swiper/css/navigation';
 export const HeroCarousel = () => {
   const [games, setGames] = useState<Game[]>([]);
   const [playingId, setPlayingId] = useState<number | null>(null);
+  const { addToCart } = useCart(); // Access addToCart
 
   useEffect(() => {
     fetch('/api/gamesData.json')
@@ -63,7 +65,10 @@ export const HeroCarousel = () => {
                     {game.description}
                   </p>
                   <div className="flex gap-4">
-                    <button className="bg-electric-lime text-rich-meadow font-segoeproblack font-black text-[14px] py-[6px] px-[20px] rounded-full hover:bg-lumi-green hover:text-snowfield-white transition-colors flex items-center gap-2">
+                    <button 
+                      onClick={() => addToCart(game)} // Add to cart functionality
+                      className="bg-electric-lime text-rich-meadow font-segoeproblack font-black text-[14px] py-[6px] px-[20px] rounded-full hover:bg-lumi-green hover:text-snowfield-white transition-colors flex items-center gap-2"
+                    >
                       ORDER NOW
                     </button>
                     <button
