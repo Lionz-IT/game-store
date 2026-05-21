@@ -44,7 +44,7 @@ export const HeroCarousel = () => {
       >
         {games.map((game) => (
           <SwiperSlide key={game._id} className="h-full">
-            {({ isActive }) => (
+            {({ isActive }: { isActive: boolean }) => (
               <div
                 className={`w-full h-full bg-cover bg-center rounded-3xl relative shadow-2xl transition-all duration-300 overflow-hidden ${isActive ? 'scale-100' : 'scale-90 opacity-60'}`}
                 style={{ backgroundImage: `url('${game.img}')` }}
