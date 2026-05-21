@@ -3,7 +3,7 @@ import type { Game } from '../context/WishlistContext';
 import { GameForm } from '../components/GameForm';
 import { Trash2, Edit2, Plus } from 'lucide-react';
 
-const API_URL = 'https://game-store-backend.onrender.com';
+const API_URL = 'https://game-store-backend1.onrender.com';
 
 export const SellerPage = () => {
   const [games, setGames] = useState<Game[]>([]);
