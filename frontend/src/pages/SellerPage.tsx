@@ -24,16 +24,6 @@ export const SellerPage = () => {
     setGames(games.filter(g => g._id !== id));
   };
 
-  useEffect(() => {
-    fetchGames();
-  }, []);
-
-  const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure?')) return;
-    await fetch(`${API_URL}/api/games/${id}`, { method: 'DELETE' });
-    setGames(games.filter(g => g._id !== id));
-  };
-
   const handleSave = async (data: Partial<Game>) => {
     const method = editingGame ? 'PUT' : 'POST';
     const url = editingGame ? `${API_URL}/api/games/${editingGame._id}` : `${API_URL}/api/games`;
