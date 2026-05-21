@@ -33,7 +33,10 @@ RUN composer install --optimize-autoloader --no-dev
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Menjalankan migrasi dan server Apache
-CMD php artisan config:cache && \
+CMD php artisan config:clear && \
+    php artisan route:clear && \
+    php artisan view:clear && \
+    php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache && \
     php artisan migrate --force && \
