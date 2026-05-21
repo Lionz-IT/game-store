@@ -14,9 +14,6 @@ class GameController extends Controller
 
     public function store(Request $request)
     {
-        // Debugging: check if the request reached here
-        return response()->json(['message' => 'Request reached controller', 'data' => $request->all()], 200);
-
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -26,6 +23,9 @@ class GameController extends Controller
             'rating' => 'nullable|numeric|min:0|max:5',
         ]);
 
+        $game = Game::create($validated);
+        return response()->json($game, 201);
+    }
         $game = Game::create($validated);
         return response()->json($game, 201);
     }
