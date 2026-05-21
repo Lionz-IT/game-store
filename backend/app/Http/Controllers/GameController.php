@@ -26,9 +26,6 @@ class GameController extends Controller
         $game = Game::create($validated);
         return response()->json($game, 201);
     }
-        $game = Game::create($validated);
-        return response()->json($game, 201);
-    }
 
     public function show(Game $game)
     {
