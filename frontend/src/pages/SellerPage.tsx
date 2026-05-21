@@ -23,12 +23,12 @@ export const SellerPage = () => {
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure?')) return;
     await fetch(`${API_URL}/api/games/${id}`, { method: 'DELETE' });
-    setGames(games.filter(g => g.id !== id));
+    setGames(games.filter(g => g._id !== id));
   };
 
   const handleSave = async (data: Partial<Game>) => {
     const method = editingGame ? 'PUT' : 'POST';
-    const url = editingGame ? `${API_URL}/api/games/${editingGame.id}` : `${API_URL}/api/games`;
+    const url = editingGame ? `${API_URL}/api/games/${editingGame._id}` : `${API_URL}/api/games`;
     
     // Map 'img' to 'image_url' as expected by backend
     const payload = {
@@ -91,12 +91,12 @@ export const SellerPage = () => {
           </thead>
           <tbody className="text-absolute-zero">
             {games.map(game => (
-              <tr key={game.id} className="bg-snowfield-white rounded-xl shadow-sm">
+              <tr key={game._id} className="bg-snowfield-white rounded-xl shadow-sm">
                 <td className="py-4 px-4 font-semibold">{game.title}</td>
                 <td className="py-4 px-4">${game.price}</td>
                 <td className="py-4 px-4 flex gap-4">
                   <button onClick={() => { setEditingGame(game); setIsFormOpen(true); }} className="text-blue-500 hover:text-blue-700"><Edit2 size={20} /></button>
-                  <button onClick={() => handleDelete(game.id)} className="text-red-500 hover:text-red-700"><Trash2 size={20} /></button>
+                  <button onClick={() => handleDelete(game._id)} className="text-red-500 hover:text-red-700"><Trash2 size={20} /></button>
                 </td>
               </tr>
             ))}
