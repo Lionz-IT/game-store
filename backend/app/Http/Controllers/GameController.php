@@ -18,10 +18,13 @@ class GameController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:0',
-            'image_url' => 'nullable|url',
+            'image_url' => 'nullable|string',
             'category' => 'required|string|max:100',
             'rating' => 'nullable|numeric|min:0|max:5',
         ]);
+
+        // Paksa image_url menjadi string kosong jika null
+        $validated['image_url'] = $validated['image_url'] ?? '';
 
         $game = Game::create($validated);
         return response()->json($game, 201);
