@@ -12,8 +12,16 @@ export const SellerPage = () => {
 
   const fetchGames = async () => {
     const res = await fetch(`${API_URL}/api/games`);
-    const data = await res.json();
-    setGames(data.data); // Backend returns paginated data, so access .data
+    const json = await res.json();
+    // Map backend 'id' to frontend '_id'
+    const data = json.data.map((g: any) => ({ ...g, _id: g.id }));
+    setGames(data);
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure?')) return;
+    await fetch(`${API_URL}/api/games/${id}`, { method: 'DELETE' });
+    setGames(games.filter(g => g._id !== id));
   };
 
   useEffect(() => {
