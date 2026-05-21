@@ -1,29 +1,21 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { Loader2, Heart, ShoppingBag, Star } from 'lucide-react';
-
-interface Deal {
-  dealID: string;
-  title: string;
-  salePrice: string;
-  normalPrice: string;
-  thumb: string;
-  steamRatingText: string;
-  steamRatingPercent: string;
-  savings: string;
-}
+import { useWishlist } from '../context/WishlistContext';
+import type { Game } from '../context/WishlistContext';
 
 export const GameList = () => {
-  const [games, setGames] = useState<Deal[]>([]);
+  const [games, setGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   useEffect(() => {
     const fetchGames = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://www.cheapshark.com/api/1.0/deals?storeID=1&upperPrice=15&pageSize=12');
-        setGames(response.data);
+        const response = await fetch('/api/gamesData.json');
+        const data: Game[] = await response.json();
+        setGames(data);
         setError(null);
       } catch (err) {
         console.error('Error fetching games:', err);
@@ -64,26 +56,31 @@ export const GameList = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-[20px]">
             {games.map((game) => {
-              const rating = parseInt(game.steamRatingPercent) || 0;
-              const isHighRated = rating >= 85;
-              const starsCount = isHighRated ? 4 : (rating > 60 ? 3 : 2);
+              const liked = isInWishlist(game._id);
+              const discountPercent = Math.round(game.discount * 100);
+              const salePrice = game.discount > 0
+                ? (game.price * (1 - game.discount)).toFixed(2)
+                : game.price.toFixed(2);
               
               return (
-                <div key={game.dealID} className="bg-snowfield-white border border-whisper-gray rounded-none p-[16px] flex flex-col h-full hover:shadow-[0_0_0_2px_#107c10] transition-shadow cursor-pointer relative group">
+                <div key={game._id} className="bg-snowfield-white border border-whisper-gray rounded-none p-[16px] flex flex-col h-full hover:shadow-[0_0_0_2px_#107c10] transition-shadow cursor-pointer relative group">
                     <div className="relative mb-[16px]">
-                      <img src={game.thumb} alt={game.title} className="h-[180px] w-full object-cover rounded-none bg-whisper-gray" />
+                      <img src={game.img} alt={game.title} className="h-[180px] w-full object-cover rounded-none bg-whisper-gray" />
                       
-                      <button className="absolute top-2 right-2 text-snowfield-white hover:text-lumi-green drop-shadow-md">
+                      <button
+                        onClick={(e) => { e.stopPropagation(); toggleWishlist(game); }}
+                        className={`absolute top-2 right-2 drop-shadow-md transition-colors ${liked ? 'text-lumi-green' : 'text-snowfield-white hover:text-lumi-green'}`}
+                      >
                         <Heart size={20} fill="currentColor" strokeWidth={1} />
                       </button>
 
                       <div className="absolute bottom-2 left-2 bg-electric-lime text-rich-meadow font-segoe-ui font-semibold text-caption px-[8px] py-[2px] rounded-none">
-                        {isHighRated ? 'Median' : 'Entry'}
+                        {game.level}
                       </div>
 
                       <div className="absolute bottom-2 right-2 flex text-cyber-yellow drop-shadow-md">
-                        {Array.from({ length: 4 }).map((_, i) => (
-                          <Star key={i} size={14} fill={i < starsCount ? 'currentColor' : 'none'} strokeWidth={i < starsCount ? 0 : 2} />
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star key={i} size={14} fill={i < game.rating ? 'currentColor' : 'none'} strokeWidth={i < game.rating ? 0 : 2} />
                         ))}
                       </div>
                     </div>
@@ -94,11 +91,15 @@ export const GameList = () => {
                     
                     <div className="mt-auto flex justify-between items-center relative">
                       <div className="flex items-center space-x-3">
-                        <span className="bg-lumi-green text-snowfield-white font-bold text-caption px-[6px] py-[2px] rounded-none">
-                          {Math.round(parseFloat(game.savings))}%
-                        </span>
-                        <span className="text-[12px] text-dark-steel line-through">${game.normalPrice}</span>
-                        <span className="font-bold text-heading text-absolute-zero">${game.salePrice}</span>
+                        {discountPercent > 0 && (
+                          <span className="bg-lumi-green text-snowfield-white font-bold text-caption px-[6px] py-[2px] rounded-none">
+                            {discountPercent}%
+                          </span>
+                        )}
+                        {discountPercent > 0 && (
+                          <span className="text-[12px] text-dark-steel line-through">${game.price.toFixed(2)}</span>
+                        )}
+                        <span className="font-bold text-heading text-absolute-zero">${salePrice}</span>
                       </div>
                     </div>
 
