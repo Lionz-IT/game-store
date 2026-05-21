@@ -3,25 +3,52 @@ import type { Game } from '../context/WishlistContext';
 import { GameForm } from '../components/GameForm';
 import { Trash2, Edit2, Plus } from 'lucide-react';
 
+const API_URL = 'https://game-store-backend.onrender.com';
+
 export const SellerPage = () => {
   const [games, setGames] = useState<Game[]>([]);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
 
+  const fetchGames = async () => {
+    const res = await fetch(`${API_URL}/api/games`);
+    const data = await res.json();
+    setGames(data.data); // Backend returns paginated data, so access .data
+  };
+
   useEffect(() => {
-    fetch('/api/gamesData.json')
-      .then(res => res.json())
-      .then(data => setGames(data));
+    fetchGames();
   }, []);
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
+    if (!confirm('Are you sure?')) return;
+    await fetch(`${API_URL}/api/games/${id}`, { method: 'DELETE' });
     setGames(games.filter(g => g._id !== id));
   };
 
-  const handleSave = (data: Partial<Game>) => {
-    console.log('Saving game:', data);
+  const handleSave = async (data: Partial<Game>) => {
+    const method = editingGame ? 'PUT' : 'POST';
+    const url = editingGame ? `${API_URL}/api/games/${editingGame._id}` : `${API_URL}/api/games`;
+    
+    // Map 'img' to 'image_url' as expected by backend
+    const payload = {
+        title: data.title,
+        description: data.description,
+        price: data.price,
+        category: data.category,
+        image_url: data.img,
+        rating: data.rating
+    };
+
+    await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
     setIsFormOpen(false);
     setEditingGame(null);
+    fetchGames(); // Refresh list
   };
 
   return (
