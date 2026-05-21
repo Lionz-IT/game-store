@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
+import { vi } from 'vitest';
 
-global.fetch = vi.fn((url) => {
+(window as any).fetch = vi.fn((url: string) => {
   if (url === '/api/gamesData.json') {
     return Promise.resolve({
       json: () => Promise.resolve([
@@ -21,5 +22,5 @@ global.fetch = vi.fn((url) => {
     });
   }
   return Promise.reject(new Error('Unknown URL'));
-}) as any;
+});
 
