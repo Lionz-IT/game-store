@@ -18,6 +18,10 @@ export const SellerPage = () => {
     setGames(data);
   };
 
+  useEffect(() => {
+    fetchGames();
+  }, []);
+
   const handleDelete = async (id: number) => {
     if (!confirm('Are you sure?')) return;
     await fetch(`${API_URL}/api/games/${id}`, { method: 'DELETE' });
